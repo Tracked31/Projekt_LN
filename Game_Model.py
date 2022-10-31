@@ -1,7 +1,7 @@
 class GameModel:
 
     def __init__(self):
-        self.__init__()
+        pass
 
     def current_player(self, current_play):
         player1 = "X"
@@ -11,5 +11,3 @@ class GameModel:
         elif current_play == player2:
             current_play = player1
         return current_play
-
-

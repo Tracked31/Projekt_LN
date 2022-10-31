@@ -206,3 +206,16 @@ class GameController:
         with open("game_date.json", "r") as file:
             json_str = json.load(file)
             print(json_str)
+
+    def main(self):
+        self.view.board()
+
+        self.view.welcome_game()
+
+        self.state_loader()
+
+        if self.view.game_mode():
+            self.mode_player()
+
+        if not self.view.game_mode():
+            self.mode_AI()
