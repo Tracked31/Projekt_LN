@@ -44,9 +44,10 @@ class GameView:
 
     def game_mode(self):
         run = True
-        while run:
-            mode = int(input("If you want to play against the computer type 1, "
-                             "if you want to play against yourself type 0:"))
+        mode = int(input("If you want to play against the computer type 1, "
+                         "if you want to play against yourself type 0:"))
+
+        if mode == 0 or mode == 1:
             if mode == 0:
                 a = True
                 return a
