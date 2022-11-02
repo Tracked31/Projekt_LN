@@ -9,16 +9,16 @@ class GameController:
     view: GameView
 
     def __init__(self):
-        self.game = GameModel()
-        self.view = GameView()
+        self.game: GameModel = GameModel()
+        self.view: GameView = GameView()
 
-    def space_is_empty(self, board, pos):
+    def space_is_empty(self, board: list[str], pos: int) -> bool:
         if board[pos] == "_":
             return True
         else:
             return False
 
-    def get_winner_1(self, board, current_play):
+    def get_winner_1(self, board: list[str], current_play: str) -> bool:
         if ((board[0] == current_play and board[1] == current_play and board[2] == current_play) or
             (board[3] == current_play and board[4] == current_play and board[5] == current_play) or
             (board[6] == current_play and board[7] == current_play and board[8] == current_play) or
@@ -29,37 +29,24 @@ class GameController:
             (board[2] == current_play and board[4] == current_play and board[6] == current_play)):
             return True
 
-    def is_draw(self, board, current_play):
-        if self.is_over(self.game.board()) == True or self.get_winner_1(self.game.board(), current_play) == True:
-            return True
-        else:
-            return False
+    def is_draw(self, board: list[str], current_play: str) -> bool:
+        return self.is_over(board) or self.get_winner_1(self.game.board(), current_play)
 
-    def is_over(self, board):
-        if "_" in board:
-            return False
-        else:
-            return True
+    def is_over(self, board: list[str]) -> bool:
+        return "_" not in board
 
-    def make_move(self, board, current_play):
-        run = True
-        while run:
-            player_inp = self.view.input()
-            if 1 <= player_inp <= 9:
-                player_inp -= 1
-                if self.space_is_empty(board, player_inp):
-                    run = False
-                    board[player_inp] = current_play
-                else:
-                    if not self.space_is_empty(board, player_inp):
-                        self.view.pos_taken()
+    def make_move(self, board, current_play) -> None:
+        while True:
+            player_inp = self.view.select_slot()
+            if self.space_is_empty(board, player_inp):
+                board[player_inp] = current_play
+                break
             else:
-                run = False
-                self.view.in_range()
+                self.view.pos_taken()
 
         self.view.print_board(board)
 
-    def minmax_alg(self, board, maximising):
+    def minmax_alg(self, board, maximising) -> int:
         current_score = None
 
         if self.is_draw(self.game.board(), "O") is True:
@@ -210,12 +197,12 @@ class GameController:
     def main(self):
         self.game.board()
 
+        self.game.mode = self.view.mode_inp()
         self.view.welcome_game()
 
         self.state_loader()
 
-        if self.view.game_mode(self.view.mode):
+        if self.game.mode == 0:
             self.mode_player()
-
-        if not self.view.game_mode(self.view.mode):
+        else:
             self.mode_AI()

@@ -1,13 +1,19 @@
 class GameModel:
+    _board: list[str] = []
+    _players = ['X', 'O']
+    _active = 'X'
+    mode: int
 
     def __init__(self):
-        pass
+        self.reload()
 
     def board(self):
-        board = ["_" for i in range(9)]
-        return board
+        return self._board
 
-    def current_player(self, current_play):
+    def reload(self) -> None:
+        self._board = ["_" for i in range(9)]
+
+    def current_player(self, current_play) -> str:
         player1 = "X"
         player2 = "O"
         if current_play == player1:

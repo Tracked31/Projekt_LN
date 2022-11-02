@@ -5,7 +5,6 @@ class GameView:
     model: GameModel
 
     def __init__(self):
-        self.mode = self.mode_inp()
         self.model = GameModel()
 
     def print_board(self, board: list):
@@ -19,8 +18,14 @@ class GameView:
 
         print(board[6] + "  |  " + board[7] + "  |  " + board[8])
 
-    def input(self):
-        return int(input("Select a number between 1-9 to make your move:"))
+    def select_slot(self) -> int:
+        inp = None
+        while 1 < inp < 10:
+            try:
+                inp = int(input("Select a number between 1-9 to make your move:"))
+            except Exception as e:
+                print(e)
+        return inp-1
 
     def pos_taken(self):
         print("This position is already taken!")
@@ -44,21 +49,11 @@ class GameView:
         return input("If you want to exit the game type 'ex' and the game will save and close:")
 
     def mode_inp(self):
-        return int(input("If you want to play against the computer type 1, "
-                         "if you want to play against yourself type 0:"))
-
-
-    def game_mode(self, mode):
-        run = True
-        while run:
-            if mode == 0 or mode == 1:
-                if mode == 0:
-                    a = True
-                    return a
-                elif mode == 1:
-                    a = False
-                    return a
-            else:
-                run = False
-                print("Please select an available game mode!!! ")
-                self.mode_inp()
+        inp = None
+        while inp not in [0, 1]:
+            try:
+                inp = int(input("If you want to play against the computer type 1, "
+                                "if you want to play against yourself type 0:"))
+            except Exception as e:
+                print(e)
+        return inp
