@@ -1,13 +1,14 @@
+from Game_Model import GameModel
+
+
 class GameView:
+    model: GameModel
 
     def __init__(self):
-        pass
+        self.mode = self.mode_inp()
+        self.model = GameModel()
 
-    def board(self):
-        board = ["_" for i in range(9)]
-
-
-    def print_board(selfm, board):
+    def print_board(self, board: list):
         print(board[0] + "  |  " + board[1] + "  |  " + board[2])
 
         print("_____________")
@@ -42,18 +43,22 @@ class GameView:
     def exit_inp(self):
         return input("If you want to exit the game type 'ex' and the game will save and close:")
 
-    def game_mode(self):
-        run = True
-        mode = int(input("If you want to play against the computer type 1, "
+    def mode_inp(self):
+        return int(input("If you want to play against the computer type 1, "
                          "if you want to play against yourself type 0:"))
 
-        if mode == 0 or mode == 1:
-            if mode == 0:
-                a = True
-                return a
-            elif mode == 1:
-                a = False
-                return a
-        else:
-            run = False
-            print("Please select an available game mode!!! ")
+
+    def game_mode(self, mode):
+        run = True
+        while run:
+            if mode == 0 or mode == 1:
+                if mode == 0:
+                    a = True
+                    return a
+                elif mode == 1:
+                    a = False
+                    return a
+            else:
+                run = False
+                print("Please select an available game mode!!! ")
+                self.mode_inp()

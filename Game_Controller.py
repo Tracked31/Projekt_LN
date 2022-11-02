@@ -30,7 +30,7 @@ class GameController:
             return True
 
     def is_draw(self, board, current_play):
-        if self.is_over(self.view.board()) == True or self.get_winner_1(self.view.board(), current_play) == True:
+        if self.is_over(self.game.board()) == True or self.get_winner_1(self.game.board(), current_play) == True:
             return True
         else:
             return False
@@ -62,16 +62,16 @@ class GameController:
     def minmax_alg(self, board, maximising):
         current_score = None
 
-        if self.is_draw(self.view.board(), "O") is True:
+        if self.is_draw(self.game.board(), "O") is True:
             current_score = 0
 
-        if self.is_draw(self.view.board(), "X") is True:
+        if self.is_draw(self.game.board(), "X") is True:
             current_score = 0
 
-        if self.get_winner_1(self.view.board(), "O") is True:
+        if self.get_winner_1(self.game.board(), "O") is True:
             current_score = +1000
 
-        if self.get_winner_1(self.view.board(), "X") is True:
+        if self.get_winner_1(self.game.board(), "X") is True:
             current_score = -1000
 
         if current_score == 1000:
@@ -86,9 +86,9 @@ class GameController:
         if maximising:
             best = -inf
             for move, _ in enumerate(board):
-                if self.space_is_empty(self.view.board(), move):
+                if self.space_is_empty(self.game.board(), move):
                     board[move] = "X"
-                    util = self.minmax_alg(self.view.board(), False)
+                    util = self.minmax_alg(self.game.board(), False)
                     board[move] = "_"
                     best = max(util, best)
             return best
@@ -96,9 +96,9 @@ class GameController:
         else:
             best = +inf
             for move, _ in enumerate(board):
-                if self.space_is_empty(self.view.board(), move):
+                if self.space_is_empty(self.game.board(), move):
                     board[move] = "O"
-                    util = self.minmax_alg(self.view.board(), True)
+                    util = self.minmax_alg(self.game.board(), True)
                     board[move] = "_"
                     best = min(util, best)
             return best
@@ -107,39 +107,39 @@ class GameController:
         if self.state_loader() == 1:
             self.load_game()
         else:
-            self.view.print_board(self.view.board())
+            self.view.print_board(self.game.board())
 
         while True:
 
             if self.exit_game():
                 break
 
-            if self.is_over(self.view.board()):
+            if self.is_over(self.game.board()):
                 print("The Game ends in a draw!!!")
                 break
             current_play = "X"
-            if self.get_winner_1(self.view.board(), current_play):
+            if self.get_winner_1(self.game.board(), current_play):
                 print("Player X has won the game!")
                 break
-            self.make_move(self.view.board(), current_play)
+            self.make_move(self.game.board(), current_play)
 
             if self.exit_game():
                 break
 
-            if self.is_over(self.view.board()):
+            if self.is_over(self.game.board()):
                 print("The game ends in a draw!!!")
                 break
             current_play = "O"
-            if self.get_winner_1(self.view.board(), current_play):
+            if self.get_winner_1(self.game.board(), current_play):
                 print("Player O has won the game!")
                 break
-            self.make_move(self.view.board(), current_play)
+            self.make_move(self.game.board(), current_play)
 
     def mode_AI(self):
         if self.state_loader() == 1:
             self.load_game()
         else:
-            self.view.print_board(self.view.board())
+            self.view.print_board(self.game.board())
 
         while True:
 
@@ -148,23 +148,23 @@ class GameController:
 
             current_play = "X"
 
-            if self.is_over(self.view.board()):
-                self.view.print_board(self.view.board())
+            if self.is_over(self.game.board()):
+                self.view.print_board(self.game.board())
                 print("The game ends in a draw!!!")
                 break
-            self.make_move(self.view.board(), current_play)
+            self.make_move(self.game.board(), current_play)
 
-            if self.get_winner_1(self.view.board(), current_play):
+            if self.get_winner_1(self.game.board(), current_play):
                 print("Player X has won the game!")
                 break
 
-            if self.is_over(self.view.board()):
-                self.view.print_board(self.view.board())
+            if self.is_over(self.game.board()):
+                self.view.print_board(self.game.board())
                 print("The game ends in a draw!!!")
                 break
-            self.computer_move(self.view.board())
+            self.computer_move(self.game.board())
 
-            if self.get_winner_1(self.view.board(), current_play):
+            if self.get_winner_1(self.game.board(), current_play):
                 print("Player X has won the game!")
                 break
 
@@ -172,9 +172,9 @@ class GameController:
         best_score = -inf
         best_move = None
         for move, _ in enumerate(board):
-            if self.space_is_empty(self.view.board(), move):
+            if self.space_is_empty(self.game.board(), move):
                 board[move] = "O"
-                score = self.minmax_alg(self.view.board(), True)
+                score = self.minmax_alg(self.game.board(), True)
                 board[move] = "_"
                 if score > best_score:
                     best_move = move
@@ -182,11 +182,11 @@ class GameController:
         return best_move
 
     def computer_move(self, board):
-        move = self.make_best_move(self.view.board())
-        if self.space_is_empty(self.view.board(), move):
+        move = self.make_best_move(self.game.board())
+        if self.space_is_empty(self.game.board(), move):
             board[move] = "O"
         print(board)
-        self.view.print_board(self.view.board())
+        self.view.print_board(self.game.board())
 
     def state_loader(self):
         load_state = self.view.state_inp()
@@ -200,7 +200,7 @@ class GameController:
 
     def save_game(self):
         with open("game_data.json", "w") as file:
-            json.dump(self.view.board(), file)
+            json.dump(self.game.board(), file)
 
     def load_game(self):
         with open("game_date.json", "r") as file:
@@ -208,14 +208,14 @@ class GameController:
             print(json_str)
 
     def main(self):
-        self.view.board()
+        self.game.board()
 
         self.view.welcome_game()
 
         self.state_loader()
 
-        if self.view.game_mode():
+        if self.view.game_mode(self.view.mode):
             self.mode_player()
 
-        if not self.view.game_mode():
+        if not self.view.game_mode(self.view.mode):
             self.mode_AI()
