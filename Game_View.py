@@ -19,13 +19,22 @@ class GameView:
         print(board[6] + "  |  " + board[7] + "  |  " + board[8])
 
     def select_slot(self) -> int:
-        inp = None
+        inp: int = 0
         while 1 < inp < 10:
             try:
                 inp = int(input("Select a number between 1-9 to make your move:"))
             except Exception as e:
                 print(e)
         return inp-1
+
+    def draw_output(self):
+        print("The game ends in a draw!!!")
+
+    def win_X_output(self):
+        print("Player X has won the game!")
+
+    def win_O_output(self):
+        print("Player O has won the game!")
 
     def pos_taken(self):
         print("This position is already taken!")
@@ -43,10 +52,18 @@ class GameView:
         print("")
 
     def state_inp(self):
-        return input("If you want to load the games state from the last time you exited the game type 1:")
+        try:
+            return int(input("If you want to load the games state from the "
+                             "last time you exited the game type '1':"))
+        except Exception as e:
+            print(e)
 
     def exit_inp(self):
-        return input("If you want to exit the game type 'ex' and the game will save and close:")
+        try:
+            return str(input("If you want to exit the game type 'ex' and "
+                             "the game will save and close:"))
+        except Exception as e:
+            print(e)
 
     def mode_inp(self):
         inp = None

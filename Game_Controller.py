@@ -98,29 +98,26 @@ class GameController:
 
         while True:
 
-            if self.exit_game():
-                break
-
             if self.is_over(self.game.board()):
-                print("The Game ends in a draw!!!")
+                self.view.draw_output()
                 break
             current_play = "X"
             if self.get_winner_1(self.game.board(), current_play):
-                print("Player X has won the game!")
+                self.view.win_X_output()
                 break
             self.make_move(self.game.board(), current_play)
-
             if self.exit_game():
                 break
-
             if self.is_over(self.game.board()):
-                print("The game ends in a draw!!!")
+                self.view.draw_output()
                 break
             current_play = "O"
             if self.get_winner_1(self.game.board(), current_play):
-                print("Player O has won the game!")
+                self.view.win_O_output()
                 break
             self.make_move(self.game.board(), current_play)
+            if self.exit_game():
+                break
 
     def mode_AI(self):
         if self.state_loader() == 1:
@@ -137,22 +134,22 @@ class GameController:
 
             if self.is_over(self.game.board()):
                 self.view.print_board(self.game.board())
-                print("The game ends in a draw!!!")
+                self.view.draw_output()
                 break
             self.make_move(self.game.board(), current_play)
 
             if self.get_winner_1(self.game.board(), current_play):
-                print("Player X has won the game!")
+                self.view.win_X_output()
                 break
 
             if self.is_over(self.game.board()):
                 self.view.print_board(self.game.board())
-                print("The game ends in a draw!!!")
+                self.view.draw_output()
                 break
             self.computer_move(self.game.board())
 
             if self.get_winner_1(self.game.board(), current_play):
-                print("Player X has won the game!")
+                self.view.win_X_output()
                 break
 
     def make_best_move(self, board):
@@ -196,12 +193,8 @@ class GameController:
 
     def main(self):
         self.game.board()
-
-        self.game.mode = self.view.mode_inp()
         self.view.welcome_game()
-
-        self.state_loader()
-
+        self.game.mode = self.view.mode_inp()
         if self.game.mode == 0:
             self.mode_player()
         else:
