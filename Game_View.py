@@ -20,7 +20,7 @@ class GameView:
 
     def select_slot(self) -> int:
         inp: int = 0
-        while 1 < inp < 10:
+        while not(0 < inp < 10):
             try:
                 inp = int(input("Select a number between 1-9 to make your move:"))
             except Exception as e:
@@ -65,7 +65,7 @@ class GameView:
         except Exception as e:
             print(e)
 
-    def mode_inp(self):
+    def mode_inp(self) -> int:
         inp = None
         while inp not in [0, 1]:
             try:

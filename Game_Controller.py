@@ -90,68 +90,6 @@ class GameController:
                     best = min(util, best)
             return best
 
-    def mode_player(self):
-        if self.state_loader() == 1:
-            self.load_game()
-        else:
-            self.view.print_board(self.game.board())
-
-        while True:
-
-            if self.is_over(self.game.board()):
-                self.view.draw_output()
-                break
-            current_play = "X"
-            if self.get_winner_1(self.game.board(), current_play):
-                self.view.win_X_output()
-                break
-            self.make_move(self.game.board(), current_play)
-            if self.exit_game():
-                break
-            if self.is_over(self.game.board()):
-                self.view.draw_output()
-                break
-            current_play = "O"
-            if self.get_winner_1(self.game.board(), current_play):
-                self.view.win_O_output()
-                break
-            self.make_move(self.game.board(), current_play)
-            if self.exit_game():
-                break
-
-    def mode_AI(self):
-        if self.state_loader() == 1:
-            self.load_game()
-        else:
-            self.view.print_board(self.game.board())
-
-        while True:
-
-            if self.exit_game():
-                break
-
-            current_play = "X"
-
-            if self.is_over(self.game.board()):
-                self.view.print_board(self.game.board())
-                self.view.draw_output()
-                break
-            self.make_move(self.game.board(), current_play)
-
-            if self.get_winner_1(self.game.board(), current_play):
-                self.view.win_X_output()
-                break
-
-            if self.is_over(self.game.board()):
-                self.view.print_board(self.game.board())
-                self.view.draw_output()
-                break
-            self.computer_move(self.game.board())
-
-            if self.get_winner_1(self.game.board(), current_play):
-                self.view.win_X_output()
-                break
-
     def make_best_move(self, board):
         best_score = -inf
         best_move = None
@@ -169,7 +107,6 @@ class GameController:
         move = self.make_best_move(self.game.board())
         if self.space_is_empty(self.game.board(), move):
             board[move] = "O"
-        print(board)
         self.view.print_board(self.game.board())
 
     def state_loader(self):
@@ -177,19 +114,76 @@ class GameController:
         if load_state == 1:
             self.load_game()
 
-    def exit_game(self):
-        ex_game = self.view.exit_inp()
-        if ex_game == "ex":
-            self.save_game()
-
     def save_game(self):
         with open("game_data.json", "w") as file:
             json.dump(self.game.board(), file)
+
+    def exit_game(self):
+        ex_game = self.view.exit_inp()
+        if ex_game == "ex":
+            return self.save_game()
 
     def load_game(self):
         with open("game_date.json", "r") as file:
             json_str = json.load(file)
             print(json_str)
+
+    def mode_player(self):
+        if self.state_loader() == 1:
+            self.load_game()
+        else:
+            self.view.print_board(self.game.board())
+
+        while True:
+
+            if self.is_over(self.game.board()):
+                self.view.draw_output()
+                break
+            current_play = "X"
+            if self.get_winner_1(self.game.board(), current_play):
+                self.view.win_X_output()
+                break
+            self.make_move(self.game.board(), current_play)
+            if self.exit_game():
+                exit()
+            if self.is_over(self.game.board()):
+                self.view.draw_output()
+                break
+            current_play = "O"
+            if self.get_winner_1(self.game.board(), current_play):
+                self.view.win_O_output()
+                break
+            self.make_move(self.game.board(), current_play)
+            if self.exit_game():
+                exit()
+
+    def mode_AI(self):
+        if self.state_loader() == 1:
+            self.load_game()
+        else:
+            self.view.print_board(self.game.board())
+
+        while True:
+
+            current_play = "X"
+            if self.is_over(self.game.board()):
+                self.view.print_board(self.game.board())
+                self.view.draw_output()
+                break
+            self.make_move(self.game.board(), current_play)
+            if self.get_winner_1(self.game.board(), current_play):
+                self.view.win_X_output()
+                break
+            if self.exit_game():
+                exit()
+            if self.is_over(self.game.board()):
+                self.view.print_board(self.game.board())
+                self.view.draw_output()
+                break
+            self.computer_move(self.game.board())
+            if self.get_winner_1(self.game.board(), current_play):
+                self.view.win_X_output()
+                break
 
     def main(self):
         self.game.board()
