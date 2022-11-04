@@ -5,11 +5,11 @@ import json
 
 
 class GameController:
-    game: GameModel
+    model: GameModel
     view: GameView
 
     def __init__(self):
-        self.game: GameModel = GameModel()
+        self.model: GameModel = GameModel()
         self.view: GameView = GameView()
 
     def space_is_empty(self, board: list[str], pos: int) -> bool:
@@ -30,7 +30,7 @@ class GameController:
             return True
 
     def is_draw(self, board: list[str], current_play: str) -> bool:
-        return self.is_over(board) or self.get_winner_1(self.game.board(), current_play)
+        return self.is_over(board) or self.get_winner_1(self.model.board(), current_play)
 
     def is_over(self, board: list[str]) -> bool:
         return "_" not in board
@@ -49,16 +49,16 @@ class GameController:
     def minmax_alg(self, board, maximising) -> int:
         current_score = None
 
-        if self.is_draw(self.game.board(), "O") is True:
+        if self.is_draw(self.model.board(), "O") is True:
             current_score = 0
 
-        if self.is_draw(self.game.board(), "X") is True:
+        if self.is_draw(self.model.board(), "X") is True:
             current_score = 0
 
-        if self.get_winner_1(self.game.board(), "O") is True:
+        if self.get_winner_1(self.model.board(), "O") is True:
             current_score = +1000
 
-        if self.get_winner_1(self.game.board(), "X") is True:
+        if self.get_winner_1(self.model.board(), "X") is True:
             current_score = -1000
 
         if current_score == 1000:
@@ -73,9 +73,9 @@ class GameController:
         if maximising:
             best = -inf
             for move, _ in enumerate(board):
-                if self.space_is_empty(self.game.board(), move):
+                if self.space_is_empty(self.model.board(), move):
                     board[move] = "X"
-                    util = self.minmax_alg(self.game.board(), False)
+                    util = self.minmax_alg(self.model.board(), False)
                     board[move] = "_"
                     best = max(util, best)
             return best
@@ -83,9 +83,9 @@ class GameController:
         else:
             best = +inf
             for move, _ in enumerate(board):
-                if self.space_is_empty(self.game.board(), move):
+                if self.space_is_empty(self.model.board(), move):
                     board[move] = "O"
-                    util = self.minmax_alg(self.game.board(), True)
+                    util = self.minmax_alg(self.model.board(), True)
                     board[move] = "_"
                     best = min(util, best)
             return best
@@ -94,9 +94,9 @@ class GameController:
         best_score = -inf
         best_move = None
         for move, _ in enumerate(board):
-            if self.space_is_empty(self.game.board(), move):
+            if self.space_is_empty(self.model.board(), move):
                 board[move] = "O"
-                score = self.minmax_alg(self.game.board(), True)
+                score = self.minmax_alg(self.model.board(), True)
                 board[move] = "_"
                 if score > best_score:
                     best_move = move
@@ -104,10 +104,10 @@ class GameController:
         return best_move
 
     def computer_move(self, board):
-        move = self.make_best_move(self.game.board())
-        if self.space_is_empty(self.game.board(), move):
+        move = self.make_best_move(self.model.board())
+        if self.space_is_empty(self.model.board(), move):
             board[move] = "O"
-        self.view.print_board(self.game.board())
+        self.view.print_board(self.model.board())
 
     def state_loader(self):
         load_state = self.view.state_inp()
@@ -116,80 +116,87 @@ class GameController:
 
     def save_game(self):
         with open("game_data.json", "w") as file:
-            json.dump(self.game.board(), file)
+            json.dump(self.model.board(), file)
 
     def exit_game(self):
         ex_game = self.view.exit_inp()
         if ex_game == "ex":
-            return self.save_game()
+            self.save_game()
+            return True
 
     def load_game(self):
-        with open("game_date.json", "r") as file:
-            json_str = json.load(file)
-            print(json_str)
+        with open("game_data.json", "r") as file:
+            data = json.load(file)
+            self.model._board = data
+            count_X = 0
+            count_O = 0
+            for element in data:
+                if element == "X":
+                    count_X += 1
+                if element == "O":
+                    count_O += 1
+
+            if count_X > count_O:
+                load_current1 = "O"
+                return load_current1
+            else:
+                load_current2 = "X"
+                return load_current2
 
     def mode_player(self):
         if self.state_loader() == 1:
             self.load_game()
+            self.model.current_play = self.load_game()
         else:
-            self.view.print_board(self.game.board())
+            self.view.print_board(self.model.board())
 
         while True:
 
-            if self.is_over(self.game.board()):
+            if self.is_over(self.model.board()):
                 self.view.draw_output()
-                break
-            current_play = "X"
-            if self.get_winner_1(self.game.board(), current_play):
-                self.view.win_X_output()
-                break
-            self.make_move(self.game.board(), current_play)
-            if self.exit_game():
                 exit()
-            if self.is_over(self.game.board()):
-                self.view.draw_output()
+            if self.get_winner_1(self.model.board(), self.model.current_play):
+                self.view.win_output()
                 break
-            current_play = "O"
-            if self.get_winner_1(self.game.board(), current_play):
-                self.view.win_O_output()
-                break
-            self.make_move(self.game.board(), current_play)
+            self.make_move(self.model.board(), self.model.current_play)
             if self.exit_game():
                 exit()
 
     def mode_AI(self):
         if self.state_loader() == 1:
             self.load_game()
+            self.model.current_play = self.load_game()
         else:
-            self.view.print_board(self.game.board())
+            self.view.print_board(self.model.board())
 
         while True:
 
             current_play = "X"
-            if self.is_over(self.game.board()):
-                self.view.print_board(self.game.board())
+            if self.is_over(self.model.board()):
+                self.view.print_board(self.model.board())
                 self.view.draw_output()
-                break
-            self.make_move(self.game.board(), current_play)
-            if self.get_winner_1(self.game.board(), current_play):
+                exit()
+            self.make_move(self.model.board(), current_play)
+            if self.get_winner_1(self.model.board(), current_play):
                 self.view.win_X_output()
                 break
             if self.exit_game():
                 exit()
-            if self.is_over(self.game.board()):
-                self.view.print_board(self.game.board())
+
+            if self.is_over(self.model.board()):
+                self.view.print_board(self.model.board())
                 self.view.draw_output()
-                break
-            self.computer_move(self.game.board())
-            if self.get_winner_1(self.game.board(), current_play):
+                exit()
+            self.computer_move(self.model.board())
+            if self.get_winner_1(self.model.board(), current_play):
                 self.view.win_X_output()
                 break
 
     def main(self):
-        self.game.board()
+        self.model.board()
         self.view.welcome_game()
-        self.game.mode = self.view.mode_inp()
-        if self.game.mode == 0:
+        self.model.mode = self.view.mode_inp()
+        if self.model.mode == 0:
             self.mode_player()
         else:
             self.mode_AI()
