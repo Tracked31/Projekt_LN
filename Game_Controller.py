@@ -35,11 +35,11 @@ class GameController:
     def is_over(self, board: list[str]) -> bool:
         return "_" not in board
 
-    def make_move(self, board, current_play) -> None:
+    def make_move(self, board, current_play: str) -> None:
         while True:
             player_inp = self.view.select_slot()
             if self.space_is_empty(board, player_inp):
-                board[player_inp] = current_play
+                board[player_inp] = self.model.current_player()
                 break
             else:
                 self.view.pos_taken()
@@ -146,7 +146,7 @@ class GameController:
     def mode_player(self):
         if self.state_loader() == 1:
             self.load_game()
-            self.model.current_play = self.load_game()
+            self.model.current_player = self.load_game()
         else:
             self.view.print_board(self.model.board())
 
@@ -155,10 +155,10 @@ class GameController:
             if self.is_over(self.model.board()):
                 self.view.draw_output()
                 exit()
-            if self.get_winner_1(self.model.board(), self.model.current_play):
+            if self.get_winner_1(self.model.board(), self.model.current_player):
                 self.view.win_output()
                 break
-            self.make_move(self.model.board(), self.model.current_play)
+            self.make_move(self.model.board(), self.model.current_player)
             if self.exit_game():
                 exit()
 

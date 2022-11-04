@@ -7,6 +7,7 @@ class GameModel:
 
     def __init__(self):
         self.reload()
+        self.current_play = "X"
 
     def reload(self) -> None:
         self._board = ["_" for i in range(9)]
@@ -15,6 +16,7 @@ class GameModel:
         return self._board
 
     def current_player(self) -> str:
+        self.swap_player()
         return self.current_play
 
     def swap_player(self):
