@@ -112,7 +112,9 @@ class GameController:
     def state_loader(self):
         load_state = self.view.state_inp()
         if load_state == 1:
-            self.load_game()
+            return True
+        else:
+            return False
 
     def save_game(self):
         with open("game_data.json", "w") as file:
@@ -128,23 +130,27 @@ class GameController:
         with open("game_data.json", "r") as file:
             data = json.load(file)
             self.model._board = data
+            self.view.print_board(self.model._board)
             count_X = 0
             count_O = 0
             for element in data:
-                if element == "X":
-                    count_X += 1
                 if element == "O":
+                    count_X += 1
+                if element == "X":
                     count_O += 1
 
             if count_O > count_X:
                 load_current1 = "X"
                 return load_current1
-            else:
+            elif count_X > count_O:
                 load_current2 = "O"
                 return load_current2
+            elif count_X == count_O:
+                load_current3 = "X"
+                return load_current3
 
     def mode_player(self):
-        if self.state_loader() == 1:
+        if self.state_loader():
             self.model.current_play = self.load_game()
         else:
             self.view.print_board(self.model.board())
