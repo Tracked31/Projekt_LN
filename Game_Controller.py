@@ -136,17 +136,16 @@ class GameController:
                 if element == "O":
                     count_O += 1
 
-            if count_X > count_O:
-                load_current1 = "O"
+            if count_O > count_X:
+                load_current1 = "X"
                 return load_current1
             else:
-                load_current2 = "X"
+                load_current2 = "O"
                 return load_current2
 
     def mode_player(self):
         if self.state_loader() == 1:
-            self.load_game()
-            self.model.current_player = self.load_game()
+            self.model.current_play = self.load_game()
         else:
             self.view.print_board(self.model.board())
 
@@ -155,10 +154,10 @@ class GameController:
             if self.is_over(self.model.board()):
                 self.view.draw_output()
                 exit()
-            if self.get_winner_1(self.model.board(), self.model.current_player):
+            self.make_move(self.model.board(), self.model.current_play)
+            if self.get_winner_1(self.model.board(), self.model.current_play):
                 self.view.win_output()
                 break
-            self.make_move(self.model.board(), self.model.current_player)
             if self.exit_game():
                 exit()
 

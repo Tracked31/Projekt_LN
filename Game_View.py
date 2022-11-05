@@ -37,7 +37,7 @@ class GameView:
         print("Player O has won the game!")
 
     def win_output(self):
-        print(f"Player {self.model.current_play} has won the game!")
+        print(f"Player {self.model.current_player()} has won the game!")
 
     def pos_taken(self):
         print("This position is already taken!")
