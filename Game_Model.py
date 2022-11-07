@@ -5,7 +5,7 @@ class GameModel:
     current_play: str
     mode: int
 
-    def __init__(self) -> object:
+    def __init__(self):
         self.reload()
         self.current_play = "X"
 

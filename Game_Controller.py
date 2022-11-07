@@ -169,33 +169,33 @@ class GameController:
 
     def mode_AI(self):
         if self.state_loader() == 1:
-            self.load_game()
             self.model.current_play = self.load_game()
         else:
             self.view.print_board(self.model.board())
 
         while True:
 
-            current_play = "X"
-            if self.is_over(self.model.board()):
-                self.view.print_board(self.model.board())
-                self.view.draw_output()
-                exit()
-            self.make_move(self.model.board(), current_play)
-            if self.get_winner_1(self.model.board(), current_play):
-                self.view.win_X_output()
-                break
-            if self.exit_game():
-                exit()
-
-            if self.is_over(self.model.board()):
-                self.view.print_board(self.model.board())
-                self.view.draw_output()
-                exit()
-            self.computer_move(self.model.board())
-            if self.get_winner_1(self.model.board(), current_play):
-                self.view.win_X_output()
-                break
+            if self.model.current_play == "O":
+                if self.is_over(self.model.board()):
+                    self.view.print_board(self.model.board())
+                    self.view.draw_output()
+                    exit()
+                self.make_move(self.model.board(), self.model.current_play)
+                if self.get_winner_1(self.model.board(), self.model.current_play):
+                    self.view.win_X_output()
+                    break
+                if self.exit_game():
+                    exit()
+            if self.model.current_play == "X":
+                if self.is_over(self.model.board()):
+                    self.view.print_board(self.model.board())
+                    self.view.draw_output()
+                    exit()
+                self.computer_move(self.model.board())
+                if self.get_winner_1(self.model.board(), self.model.current_play):
+                    self.view.win_X_output()
+                    break
+                self.model.swap_player()
 
     def main(self):
         self.model.board()
