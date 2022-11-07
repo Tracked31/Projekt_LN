@@ -68,7 +68,7 @@ class GameView:
         except Exception as e:
             print(e)
 
-    def mode_inp(self) -> int:
+    def mode_inp(self):
         inp = None
         while inp not in [0, 1]:
             try:
