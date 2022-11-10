@@ -1,9 +1,7 @@
-
 class GameView:
    
     def __init__(self, model):
         self.model = model
-
 
     def print_board(self, board: list):
         print(board[0] + "  |  " + board[1] + "  |  " + board[2])
