@@ -1,11 +1,9 @@
-from Game_Model import GameModel
-
 
 class GameView:
-    model: GameModel
+   
+    def __init__(self, model):
+        self.model = model
 
-    def __init__(self):
-        self.model = GameModel()
 
     def print_board(self, board: list):
         print(board[0] + "  |  " + board[1] + "  |  " + board[2])

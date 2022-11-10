@@ -10,7 +10,7 @@ class GameController:
 
     def __init__(self):
         self.model: GameModel = GameModel()
-        self.view: GameView = GameView()
+        self.view: GameView = GameView(self.model)
 
     def space_is_empty(self, board: list[str], pos: int) -> bool:
         if board[pos] == "_":
@@ -20,13 +20,13 @@ class GameController:
 
     def get_winner_1(self, board: list[str], current_play: str) -> bool:
         if ((board[0] == current_play and board[1] == current_play and board[2] == current_play) or
-            (board[3] == current_play and board[4] == current_play and board[5] == current_play) or
-            (board[6] == current_play and board[7] == current_play and board[8] == current_play) or
-            (board[0] == current_play and board[3] == current_play and board[6] == current_play) or
-            (board[1] == current_play and board[4] == current_play and board[7] == current_play) or
-            (board[2] == current_play and board[5] == current_play and board[8] == current_play) or
-            (board[0] == current_play and board[4] == current_play and board[8] == current_play) or
-            (board[2] == current_play and board[4] == current_play and board[6] == current_play)):
+                (board[3] == current_play and board[4] == current_play and board[5] == current_play) or
+                (board[6] == current_play and board[7] == current_play and board[8] == current_play) or
+                (board[0] == current_play and board[3] == current_play and board[6] == current_play) or
+                (board[1] == current_play and board[4] == current_play and board[7] == current_play) or
+                (board[2] == current_play and board[5] == current_play and board[8] == current_play) or
+                (board[0] == current_play and board[4] == current_play and board[8] == current_play) or
+                (board[2] == current_play and board[4] == current_play and board[6] == current_play)):
             return True
 
     def is_draw(self, board: list[str], current_play: str) -> bool:
@@ -106,7 +106,7 @@ class GameController:
     def computer_move(self, board):
         move = self.make_best_move(self.model.board())
         if self.space_is_empty(self.model.board(), move):
-            board[move] = "O"
+            board[move] = self.model.current_player()
         self.view.print_board(self.model.board())
 
     def state_loader(self):
@@ -130,7 +130,7 @@ class GameController:
         with open("game_data.json", "r") as file:
             data = json.load(file)
             self.model._board = data
-            self.view.print_board(self.model._board)
+            self.view.print_board(self.model.board())
             count_X = 0
             count_O = 0
             for element in data:
@@ -156,16 +156,16 @@ class GameController:
             self.view.print_board(self.model.board())
 
         while True:
-
+            self.make_move(self.model.board(), self.model.current_play)
             if self.is_over(self.model.board()):
                 self.view.draw_output()
-                exit()
-            self.make_move(self.model.board(), self.model.current_play)
+                break
             if self.get_winner_1(self.model.board(), self.model.current_play):
                 self.view.win_output()
                 break
             if self.exit_game():
-                exit()
+                break
+            self.model.swap_player()
 
     def mode_AI(self):
         if self.state_loader() == 1:
@@ -184,7 +184,7 @@ class GameController:
                 self.view.draw_output()
                 break
             if self.exit_game():
-                exit(0)
+                break
             self.model.swap_player()
 
     def main(self):
