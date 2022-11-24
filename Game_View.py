@@ -1,5 +1,5 @@
 class GameView:
-   
+
     def __init__(self, model):
         self.model = model
 
@@ -16,7 +16,7 @@ class GameView:
 
     def select_slot(self) -> int:
         inp: int = 0
-        while not(0 < inp < 10):
+        while not (0 < inp < 10):
             try:
                 inp = int(input("Select a number between 1-9 to make your move:"))
             except Exception as e:
@@ -54,8 +54,8 @@ class GameView:
         try:
             return int(input("If you want to load the games state from the "
                              "last time you exited the game type '1':"))
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
 
     def exit_inp(self):
         try:
@@ -70,6 +70,6 @@ class GameView:
             try:
                 inp = int(input("If you want to play against the computer type 1, "
                                 "if you want to play against yourself type 0:"))
-            except Exception as e:
-                print(e)
+            except Exception as error:
+                print(error)
         return inp
