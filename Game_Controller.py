@@ -28,6 +28,8 @@ class GameController:
                 (board[0] == current_play and board[4] == current_play and board[8] == current_play) or
                 (board[2] == current_play and board[4] == current_play and board[6] == current_play)):
             return True
+        else:
+            return False
 
     def is_draw(self, board: list[str], current_play: str) -> bool:
         return self.is_over(board) or self.get_winner_1(self.model.board(), current_play)
