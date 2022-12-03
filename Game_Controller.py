@@ -139,7 +139,7 @@ class GameController:
             self.view.print_board(self.model.board())
             count_X = 0
             count_O = 0
-            for element in data:
+            for element in new_board:
                 if element == "O":
                     count_X += 1
                 if element == "X":
