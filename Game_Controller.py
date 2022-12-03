@@ -118,8 +118,11 @@ class GameController:
             return False
 
     def save_game(self):
+        json_data = {
+            "board": self.model.board()
+        }
         with open("game_data.json", "w") as file:
-            json.dump(self.model.board(), file)
+            json.dump(json_data, file)
 
     def exit_game(self):
         ex_game = self.view.exit_inp()
@@ -129,8 +132,10 @@ class GameController:
 
     def load_game(self):
         with open("game_data.json", "r") as file:
+
             data = json.load(file)
-            self.model._board = data
+            new_board = data["board"]
+            self.model._board = new_board
             self.view.print_board(self.model.board())
             count_X = 0
             count_O = 0

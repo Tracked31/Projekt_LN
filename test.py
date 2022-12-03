@@ -1,6 +1,4 @@
 from Game_Controller import GameController
-from Game_Model import GameModel
-from Game_View import GameView
 import unittest
 from unittest import mock
 from unittest.mock import patch
@@ -9,15 +7,13 @@ from unittest.mock import patch
 class Test_Controller(unittest.TestCase):
 
     def setUp(self):
-        self.test_model = GameModel()
         self.test_control = GameController()
-        self.test_view = GameView(self.test_model)
 
     def test_space_is_empty(self):
-        self.assertEqual(self.test_control.space_is_empty(self.test_model.board(), 8), True)
-        self.assertEqual(self.test_control.space_is_empty(self.test_model.board(), 0), True)
+        self.assertEqual(self.test_control.space_is_empty(self.test_control.model.board(), 8), True)
+        self.assertEqual(self.test_control.space_is_empty(self.test_control.model.board(), 0), True)
         with self.assertRaises(IndexError):
-            self.test_control.space_is_empty(self.test_model.board(), 9)
+            self.test_control.space_is_empty(self.test_control.model.board(), 9)
 
     def test_get_winner_1(self):
         self.assertEqual(self.test_control.get_winner_1(["X", "X", "X", "_", "_", "_", "_", "_", "_"], 'X'), True) #first row
@@ -52,10 +48,11 @@ class Test_Controller(unittest.TestCase):
         self.assertEqual(self.test_control.make_move(["_", "_", "_", "_", "_", "_", "_", "_", "_"], 'X'),
                          ["X", "_", "_", "_", "_", "_", "_", "_", "_"])
         self.assertEqual(self.test_control.make_move(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'X'),
-                         self.test_view.pos_taken())
+                         self.test_control.view.pos_taken())
 
     def test_minmax_alg(self):
-
+        val1 = self.test_control.minmax_alg(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'O')
+        print(val1)
 
     def test_make_best_move(self):
         pass
@@ -66,23 +63,19 @@ class Test_Controller(unittest.TestCase):
 
     def test_save_game(self):
         fake_file_path = "game_data.json"
-        self.test_model.board = ["X", "X", "X", "_", "_", "_", "_", "_", "_"]
-        with patch('Game_Controller.GameController.builtins.open', mock.mock_open()) as mocked_file:
+        self.test_control.model.board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
+        with patch('builtins.open', mock.mock_open()) as mocked_file:
             self.test_control.save_game()
 
             mocked_file.assert_called_once_with(fake_file_path, 'w')
-            mocked_file.write.assert_called_once_with(self.test_model.board)
+            mocked_file.write.assert_called_once_with(self.test_control.model.board)
 
     def test_load_game(self):
-        file_content_mock = ''.join(self.test_model.board())
-        fake_file_path = "game_data.json"
-        with patch('Game_Controller.GameController.builtins.open'.format(__name__),
-                    new =mock.mock_open(read_data=file_content_mock)) as mocked_file:
-                actual = self.test_control.load_game()
-                mocked_file.assert_called_once_with(fake_file_path, 'r')
-
-        expected = len(file_content_mock.split('\n'))
-        self.assertEqual(expected, actual)
+        self.test_control.model.board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
+        mock_open_function = mock.mock_open(read_data=self.test_control.model.board)
+        with mock.patch('builtins.open', mock_open_function):
+            self.assertEqual(self.test_control.load_game(), "X")
+            self.assertEqual(self.test_control.model.board, ["_", "_", "_", "_", "_", "_", "_", "_", "_"])
 
 
 if __name__ == '__main__':
