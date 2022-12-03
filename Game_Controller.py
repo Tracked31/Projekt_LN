@@ -140,9 +140,9 @@ class GameController:
             count_X = 0
             count_O = 0
             for element in new_board:
-                if element == "O":
-                    count_X += 1
                 if element == "X":
+                    count_X += 1
+                if element == "O":
                     count_O += 1
 
             if count_O > count_X:
