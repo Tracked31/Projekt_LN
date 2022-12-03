@@ -55,7 +55,7 @@ class Test_Controller(unittest.TestCase):
                          self.test_view.pos_taken())
 
     def test_minmax_alg(self):
-        pass
+
 
     def test_make_best_move(self):
         pass
@@ -65,10 +65,24 @@ class Test_Controller(unittest.TestCase):
         pass
 
     def test_save_game(self):
-        file_path = "test.json"
+        fake_file_path = "game_data.json"
+        self.test_model.board = ["X", "X", "X", "_", "_", "_", "_", "_", "_"]
+        with patch('Game_Controller.GameController.builtins.open', mock.mock_open()) as mocked_file:
+            self.test_control.save_game()
+
+            mocked_file.assert_called_once_with(fake_file_path, 'w')
+            mocked_file.write.assert_called_once_with(self.test_model.board)
 
     def test_load_game(self):
-        pass
+        file_content_mock = ''.join(self.test_model.board())
+        fake_file_path = "game_data.json"
+        with patch('Game_Controller.GameController.builtins.open'.format(__name__),
+                    new =mock.mock_open(read_data=file_content_mock)) as mocked_file:
+                actual = self.test_control.load_game()
+                mocked_file.assert_called_once_with(fake_file_path, 'r')
+
+        expected = len(file_content_mock.split('\n'))
+        self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':

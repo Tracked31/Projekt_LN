@@ -28,8 +28,7 @@ class GameController:
                 (board[0] == current_play and board[4] == current_play and board[8] == current_play) or
                 (board[2] == current_play and board[4] == current_play and board[6] == current_play)):
             return True
-        else:
-            return False
+        return False
 
     def is_draw(self, board: list[str], current_play: str) -> bool:
         return self.is_over(board) or self.get_winner_1(self.model.board(), current_play)
@@ -37,7 +36,7 @@ class GameController:
     def is_over(self, board: list[str]) -> bool:
         return "_" not in board
 
-    def make_move(self, board, current_play: str) -> None:
+    def make_move(self, board, current_play: str):
         while True:
             player_inp = self.view.select_slot()
             if self.space_is_empty(board, player_inp):
