@@ -1,3 +1,4 @@
+import Game_Model
 from Game_Controller import GameController
 import unittest
 from unittest import mock
@@ -52,16 +53,28 @@ class Test_Controller(unittest.TestCase):
 
     def test_minmax_alg(self):
         val1 = self.test_control.minmax_alg(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'O')
-        print(val1)
+        val2 = self.test_control.minmax_alg(["_", "_", "_", "_", "X", "_", "_", "_", "_"], 'O')
+        val3 = self.test_control.minmax_alg(["X", "_", "_", "O", "_", "X", "_", "_", "_"], 'O')
+        val4 = self.test_control.minmax_alg(["X", "_", "X", "_", "_", "_", "O", "_", "_"], 'O')
+        val5 = self.test_control.minmax_alg(["X", "O", "X", "_", "_", "_", "O", "_", "X"], 'O')
 
+
+    @patch('Game_Controller.GameController.minmax_alg') # ???
     def test_make_best_move(self):
-        pass
+        mock_minmax_alg.return_value =   # ???
+        self.assertEqual(self.test_control.make_best_move(["_", "_", "_", "_", "X", "_", "_", "_", "_"]), 0)
 
-    def test_computer_move(self):
-        # bei vollem board testen?
-        pass
+    @patch('Game_Controller.GameController.make_best_move')
+    def test_computer_move(self, mock_make_best_move):
+        self.test_control.model.current_play = 'O'
+        mock_make_best_move.return_value = 5  # move an 6. Position
+        self.assertEqual(self.test_control.computer_move(self.test_control.model.board()),
+                         ["_", "_", "_", "_", "_", "O", "_", "_", "_"])
+        mock_make_best_move.return_value = 2  # move an 3.Position
+        self.assertEqual(self.test_control.computer_move(self.test_control.model.board()),
+                         ["_", "_", "O", "_", "_", "_", "_", "_", "_"])
 
-    def test_save_game(self):
+def test_save_game(self):
         fake_file_path = "game_data.json"
         self.test_control.model.board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
         with patch('builtins.open', mock.mock_open()) as mocked_file:
