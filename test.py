@@ -44,22 +44,20 @@ class Test_Controller(unittest.TestCase):
 
     @patch('Game_View.GameView.select_slot')
     def test_make_move(self, mock_select_slot):
-        mock_select_slot.return_value = 3
-        self.test_control.make_move(["_", "_", "_", "_", "_", "_", "_", "_", "_"], 'X')
+        mock_select_slot.return_value = 0
+        self.test_control.make_move(self.test_control.model.board(), 'X')
         self.assertEqual(self.test_control.model.board(), ["X", "_", "_", "_", "_", "_", "_", "_", "_"])
-        self.test_control.make_move(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'X')
-        self.assertEqual(self.test_control.model.board(), self.test_control.view.pos_taken())
+        self.test_control.model.current_play = 'O'
+        mock_select_slot.return_value = 6
+        self.test_control.make_move(self.test_control.model.board(), 'X')
+        self.assertEqual(self.test_control.model.board(), ["X", "_", "_", "_", "_", "_", "O", "_", "_"])
 
     def test_minmax_alg(self):
         self.assertEqual(self.test_control.minmax_alg(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'O'), 0)
-        val2 = self.test_control.minmax_alg(["_", "_", "_", "_", "X", "_", "_", "_", "_"], 'O')
-        print(val2)
-        val3 = self.test_control.minmax_alg(["X", "_", "_", "O", "_", "X", "_", "_", "_"], 'O')
-        print(val3)
-        val4 = self.test_control.minmax_alg(["X", "_", "X", "_", "_", "_", "O", "_", "_"], 'O')
-        print(val4)
-        val5 = self.test_control.minmax_alg(["X", "O", "X", "_", "_", "_", "O", "_", "X"], 'O')
-        print(val5)
+        self.assertEqual(self.test_control.minmax_alg(["_", "_", "_", "_", "X", "_", "_", "_", "_"], 'O'), 0)
+        self.assertEqual(self.test_control.minmax_alg(["X", "_", "_", "O", "_", "X", "_", "_", "_"], 'O'), 0)
+        self.assertEqual(self.test_control.minmax_alg(["X", "_", "X", "_", "_", "_", "O", "_", "_"], 'O'), 0)
+        self.assertEqual(self.test_control.minmax_alg(["X", "O", "X", "_", "_", "_", "O", "_", "X"], 'O'), 0)
 
     @patch('Game_Controller.GameController.minmax_alg')
     def test_make_best_move(self, mock_minmax_alg):

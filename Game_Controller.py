@@ -45,7 +45,7 @@ class GameController:
             else:
                 self.view.pos_taken()
 
-        self.view.print_board(self.model.board())
+        self.view.print_board(board)
 
     def minmax_alg(self, board, maximising) -> int:
         current_score = None
