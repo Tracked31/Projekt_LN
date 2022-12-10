@@ -1,7 +1,5 @@
 class GameModel:
     _board: list[str] = []
-    _players = ['X', 'O']
-    _active = 'X'
     current_play: str
     mode: int
 

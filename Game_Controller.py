@@ -45,7 +45,7 @@ class GameController:
             else:
                 self.view.pos_taken()
 
-        self.view.print_board(board)
+        self.view.print_board(self.model.board())
 
     def minmax_alg(self, board, maximising) -> int:
         current_score = None
@@ -122,7 +122,7 @@ class GameController:
             "board": self.model.board()
         }
         with open("game_data.json", "w") as file:
-            json.dump(json_data, file)
+            file.write(json.dumps(json_data))
 
     def exit_game(self):
         ex_game = self.view.exit_inp()
@@ -134,12 +134,11 @@ class GameController:
         with open("game_data.json", "r") as file:
 
             data = json.load(file)
-            new_board = data["board"]
-            self.model._board = new_board
+            self.model._board = data["board"]
             self.view.print_board(self.model.board())
             count_X = 0
             count_O = 0
-            for element in new_board:
+            for element in self.model.board():
                 if element == "X":
                     count_X += 1
                 if element == "O":

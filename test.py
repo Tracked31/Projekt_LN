@@ -1,4 +1,3 @@
-import Game_Model
 from Game_Controller import GameController
 import unittest
 from unittest import mock
@@ -45,50 +44,51 @@ class Test_Controller(unittest.TestCase):
 
     @patch('Game_View.GameView.select_slot')
     def test_make_move(self, mock_select_slot):
-        mock_select_slot.return_value = 0
-        self.assertEqual(self.test_control.make_move(["_", "_", "_", "_", "_", "_", "_", "_", "_"], 'X'),
-                         ["X", "_", "_", "_", "_", "_", "_", "_", "_"])
-        self.assertEqual(self.test_control.make_move(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'X'),
-                         self.test_control.view.pos_taken())
+        mock_select_slot.return_value = 3
+        self.test_control.make_move(["_", "_", "_", "_", "_", "_", "_", "_", "_"], 'X')
+        self.assertEqual(self.test_control.model.board(), ["X", "_", "_", "_", "_", "_", "_", "_", "_"])
+        self.test_control.make_move(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'X')
+        self.assertEqual(self.test_control.model.board(), self.test_control.view.pos_taken())
 
     def test_minmax_alg(self):
-        val1 = self.test_control.minmax_alg(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'O')
+        self.assertEqual(self.test_control.minmax_alg(["X", "_", "_", "_", "_", "_", "_", "_", "_"], 'O'), 0)
         val2 = self.test_control.minmax_alg(["_", "_", "_", "_", "X", "_", "_", "_", "_"], 'O')
+        print(val2)
         val3 = self.test_control.minmax_alg(["X", "_", "_", "O", "_", "X", "_", "_", "_"], 'O')
+        print(val3)
         val4 = self.test_control.minmax_alg(["X", "_", "X", "_", "_", "_", "O", "_", "_"], 'O')
+        print(val4)
         val5 = self.test_control.minmax_alg(["X", "O", "X", "_", "_", "_", "O", "_", "X"], 'O')
+        print(val5)
 
-
-    @patch('Game_Controller.GameController.minmax_alg') # ???
-    def test_make_best_move(self):
-        mock_minmax_alg.return_value =   # ???
+    @patch('Game_Controller.GameController.minmax_alg')
+    def test_make_best_move(self, mock_minmax_alg):
+        mock_minmax_alg.return_value = 0
         self.assertEqual(self.test_control.make_best_move(["_", "_", "_", "_", "X", "_", "_", "_", "_"]), 0)
 
     @patch('Game_Controller.GameController.make_best_move')
     def test_computer_move(self, mock_make_best_move):
         self.test_control.model.current_play = 'O'
         mock_make_best_move.return_value = 5  # move an 6. Position
-        self.assertEqual(self.test_control.computer_move(self.test_control.model.board()),
-                         ["_", "_", "_", "_", "_", "O", "_", "_", "_"])
+        self.test_control.computer_move(self.test_control.model.board())
+        self.assertEqual(self.test_control.model.board(), ["_", "_", "_", "_", "_", "O", "_", "_", "_"])
         mock_make_best_move.return_value = 2  # move an 3.Position
-        self.assertEqual(self.test_control.computer_move(self.test_control.model.board()),
-                         ["_", "_", "O", "_", "_", "_", "_", "_", "_"])
+        self.test_control.computer_move(self.test_control.model.board())
+        self.assertEqual(self.test_control.model.board(),["_", "_", "O", "_", "_", "O", "_", "_", "_"])
 
-def test_save_game(self):
+    def test_save_game(self):
         fake_file_path = "game_data.json"
-        self.test_control.model.board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
         with patch('builtins.open', mock.mock_open()) as mocked_file:
             self.test_control.save_game()
 
             mocked_file.assert_called_once_with(fake_file_path, 'w')
-            mocked_file.write.assert_called_once_with(self.test_control.model.board)
+            mocked_file().write.assert_called_once_with('{"board": ["_", "_", "_", "_", "_", "_", "_", "_", "_"]}')
 
     def test_load_game(self):
-        self.test_control.model.board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
-        mock_open_function = mock.mock_open(read_data=self.test_control.model.board)
+        mock_open_function = mock.mock_open(read_data='{"board": ["_", "_", "_", "_", "_", "_", "_", "_", "_"]}')
         with mock.patch('builtins.open', mock_open_function):
             self.assertEqual(self.test_control.load_game(), "X")
-            self.assertEqual(self.test_control.model.board, ["_", "_", "_", "_", "_", "_", "_", "_", "_"])
+            self.assertEqual(self.test_control.model.board(), ["_", "_", "_", "_", "_", "_", "_", "_", "_"])
 
 
 if __name__ == '__main__':
