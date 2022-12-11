@@ -74,6 +74,18 @@ class Test_Controller(unittest.TestCase):
         self.test_control.computer_move(self.test_control.model.board())
         self.assertEqual(self.test_control.model.board(),["_", "_", "O", "_", "_", "O", "_", "_", "_"])
 
+    @patch('Game_View.GameView.state_inp')
+    def test_state_loader(self, mock_state_inp):
+        mock_state_inp.return_value = 1
+        self.assertEqual(self.test_control.state_loader(), True)
+        mock_state_inp.return_value = 0
+        self.assertEqual(self.test_control.state_loader(), False)
+
+    @patch('Game_View.GameView.exit_inp')
+    def test_exit_game(self, mock_exit_inp):
+        mock_exit_inp.return_value = "ex"
+        self.assertEqual(self.test_control.exit_game(), True)
+
     def test_save_game(self):
         fake_file_path = "game_data.json"
         with patch('builtins.open', mock.mock_open()) as mocked_file:
